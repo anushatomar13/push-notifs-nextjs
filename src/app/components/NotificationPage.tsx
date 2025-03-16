@@ -37,7 +37,7 @@ export default function NotificationPage() {
     <div className="relative flex flex-col h-screen items-center justify-center bg-[#0a0214] p-4">
 
       <div className="relative w-80 min-h-[430px] flex flex-col justify-between rounded-xl bg-gradient-to-b from-[#1b0f2f] to-[#0a0214] p-8 text-center text-white shadow-lg">
-        
+
         <div className="relative flex items-center justify-center mt-30">
           {ripples.map((ripple) => (
             <motion.span
@@ -80,9 +80,10 @@ export default function NotificationPage() {
             </button>
           )}
         </div>
-        <div className="mt-2 space-y-2 max-h-40 overflow-y-auto">
+
+        <div className={`mt-2 space-y-2 min-h-0 ${notifications.length > 0 ? "max-h-20" : "max-h-0"} overflow-y-auto transition-all duration-300 scrollbar-thin scrollbar-thumb-[#a560ff]/50 scrollbar-track-[#1b0f2f]`}>
           {notifications.length === 0 ? (
-            <p className="text-gray-400 text-sm">No notifications yet.</p>
+            <p className="text-gray-400 text-sm text-center">No notifications yet.</p>
           ) : (
             notifications.map((notif) => (
               <div key={notif.id} className="p-2 bg-[#1b0f2f]/70 rounded-md shadow-md border border-[#a560ff]/50">
@@ -93,7 +94,6 @@ export default function NotificationPage() {
           )}
         </div>
       </div>
-
     </div>
   );
 }

@@ -3,8 +3,18 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bell } from "lucide-react";
 
-export default function PushNotifs({ setNotifications }: { setNotifications: (notifs: any) => void }) {
-  const [showNotif, setShowNotif] = useState(false);
+type NotificationType = {
+    id: number;
+    message: string;
+    timestamp: string;
+  };
+  
+  export default function PushNotifs({
+    setNotifications,
+  }: {
+    setNotifications: (notifs: NotificationType[]) => void;
+  }) {
+    const [showNotif, setShowNotif] = useState(false);
   const [permission, setPermission] = useState<NotificationPermission | null>(null);
   const [quote, setQuote] = useState("🔔 Fetching new quote...");
 
