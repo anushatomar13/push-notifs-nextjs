@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Bell } from "lucide-react";
+import PushNotifs from "./PushNotifications";
 
 export default function NotificationPage() {
   const [ripples, setRipples] = useState<{ id: number; delay: number }[]>([]);
@@ -13,7 +14,7 @@ export default function NotificationPage() {
     const interval = setInterval(() => {
       const newRipples = [
         { id: count, delay: 0 },
-        { id: count + 1, delay: 0.3 }, 
+        { id: count + 1, delay: 0.3 },
         { id: count + 2, delay: 0.6 },
       ];
 
@@ -41,7 +42,7 @@ export default function NotificationPage() {
               key={ripple.id}
               initial={{ scale: 0, opacity: 0.8 }}
               animate={{ scale: 3, opacity: 0 }}
-              transition={{ duration: 2.5, delay: ripple.delay, ease: "easeOut" }} 
+              transition={{ duration: 2.5, delay: ripple.delay, ease: "easeOut" }}
               className="absolute h-24 w-24 rounded-full border border-[#a560ff] bg-[#a560ff]/10"
             />
           ))}
@@ -58,14 +59,8 @@ export default function NotificationPage() {
           <h2 className="mt-4 text-lg font-semibold">Hola!</h2>
           <p className="text-sm text-gray-400">Lorem ipsum dolor sit amet.</p>
         </div>
-        <button className="w-full rounded-md border border-[#a560ff] px-4 py-2 text-sm font-semibold text-[#a560ff] transition-all duration-300 hover:scale-110 hover:bg-[#a560ff] hover:text-white hover:border-3 hover:border-[#d8b4ff]">
-  Send Notification
-</button>
 
-
-
-
-
+        <PushNotifs />
       </div>
     </div>
   );

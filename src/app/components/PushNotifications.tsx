@@ -20,17 +20,22 @@ export default function PushNotifs() {
       requestPermission();
       return;
     }
-
+  
     setShowNotif(true);
     setTimeout(() => setShowNotif(false), 3000);
-
+  
     if (permission === "granted") {
       new Notification("🔔 New Notification", {
         body: "This is a browser push notification!",
-        icon: "/bell-icon.png", 
+        icon: "/bell-icon.png",
       });
+  
+      if (navigator.vibrate) {
+        navigator.vibrate([200, 100, 200]); 
+      }
     }
   };
+  
 
   return (
     <div className="relative">
