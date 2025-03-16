@@ -6,10 +6,22 @@ import { Bell } from "lucide-react";
 export default function PushNotifs({ setNotifications }: { setNotifications: (notifs: any) => void }) {
   const [showNotif, setShowNotif] = useState(false);
   const [permission, setPermission] = useState<NotificationPermission | null>(null);
+  const [quote, setQuote] = useState("🔔 Fetching new quote...");
 
   useEffect(() => {
     setPermission(Notification.permission);
   }, []);
+
+  const fetchQuote = async () => {
+    try {
+      const res = await fetch("/api/groq");
+      const data = await res.json();
+      setQuote(data.quote || "Stay positive and keep going!");
+    } catch (error) {
+      console.error("Error fetching quote:", error);
+      setQuote("Keep pushing forward! 💪");
+    }
+  };
 
   const requestPermission = () => {
     Notification.requestPermission().then((perm) => {
@@ -17,18 +29,20 @@ export default function PushNotifs({ setNotifications }: { setNotifications: (no
     });
   };
 
-  const sendNotification = () => {
+  const sendNotification = async () => {
     if (permission === "default") {
       requestPermission();
       return;
     }
+
+    await fetchQuote();
 
     setShowNotif(true);
     setTimeout(() => setShowNotif(false), 3000);
 
     const newNotification = {
       id: Date.now(),
-      message: "🔔 New Notification",
+      message: quote,
       timestamp: new Date().toLocaleTimeString(),
     };
 
@@ -39,8 +53,8 @@ export default function PushNotifs({ setNotifications }: { setNotifications: (no
     setNotifications(updatedNotifications);
 
     if (permission === "granted") {
-      new Notification(newNotification.message, {
-        body: "This is a browser push notification!",
+      new Notification("✨ New Quote!", {
+        body: quote,
         icon: "/bell-icon.png",
       });
 
@@ -71,7 +85,7 @@ export default function PushNotifs({ setNotifications }: { setNotifications: (no
             <Bell className="text-[#a560ff]" />
             <div>
               <p className="font-semibold">New Notification</p>
-              <p className="text-sm text-gray-300">This assignment is submitted by Anusha Tomar!</p>
+              <p className="text-sm text-gray-300">{quote}</p>
             </div>
           </motion.div>
         )}
