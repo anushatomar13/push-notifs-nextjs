@@ -9,6 +9,7 @@ export default function NotificationPage() {
   const [ripples, setRipples] = useState<{ id: number; delay: number }[]>([]);
   const [count, setCount] = useState(0);
   const [scale, setScale] = useState(1);
+  const [notifications, setNotifications] = useState<{ id: number; message: string; timestamp: string }[]>([]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -33,7 +34,39 @@ export default function NotificationPage() {
   }, [count]);
 
   return (
-    <div className="flex h-screen items-center justify-center bg-[#0a0214]">
+    <div className="relative flex h-screen items-center justify-center bg-[#0a0214]">
+
+<div className="absolute top-10 left-[40px] w-64 max-h-60 overflow-y-auto rounded-lg bg-gradient-to-b from-[#2a0d45] to-[#12051e] shadow-lg border border-[#a560ff] p-4 backdrop-blur-md mt-2.5">
+  <div className="flex justify-between items-center">
+    <h3 className="text-md font-semibold text-white">Notification History</h3>
+    {notifications.length > 0 && (
+      <button
+        onClick={() => {
+          setNotifications([]);
+          localStorage.removeItem("notifications");
+        }}
+        className="text-xs text-red-400 hover:text-red-500 transition"
+      >
+        Clear All
+      </button>
+    )}
+  </div>
+  <div className="mt-2 space-y-2">
+    {notifications.length === 0 ? (
+      <p className="text-gray-400 text-sm">No notifications yet.</p>
+    ) : (
+      notifications.map((notif) => (
+        <div key={notif.id} className="p-2 bg-[#1b0f2f]/70 rounded-md shadow-md border border-[#a560ff]/50">
+          <p className="text-white text-sm">{notif.message}</p>
+          <span className="text-xs text-gray-400">{notif.timestamp}</span>
+        </div>
+      ))
+    )}
+  </div>
+</div>
+
+
+
       <div className="relative w-80 min-h-[600px] flex flex-col justify-between rounded-xl bg-gradient-to-b from-[#1b0f2f] to-[#0a0214] p-8 text-center text-white shadow-lg">
         
         <div className="relative flex items-center justify-center mt-30">
@@ -60,8 +93,8 @@ export default function NotificationPage() {
           <p className="text-sm text-gray-400">Lorem ipsum dolor sit amet.</p>
         </div>
 
-        <PushNotifs />
-      </div>
+        <PushNotifs setNotifications={setNotifications} />
+        </div>
     </div>
   );
 }

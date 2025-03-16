@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bell } from "lucide-react";
 
-export default function PushNotifs() {
+export default function PushNotifs({ setNotifications }: { setNotifications: (notifs: any) => void }) {
   const [showNotif, setShowNotif] = useState(false);
   const [permission, setPermission] = useState<NotificationPermission | null>(null);
 
@@ -12,7 +12,9 @@ export default function PushNotifs() {
   }, []);
 
   const requestPermission = () => {
-    Notification.requestPermission().then((perm) => setPermission(perm));
+    Notification.requestPermission().then((perm) => {
+      setPermission(perm);
+    });
   };
 
   const sendNotification = () => {
@@ -20,22 +22,33 @@ export default function PushNotifs() {
       requestPermission();
       return;
     }
-  
+
     setShowNotif(true);
     setTimeout(() => setShowNotif(false), 3000);
-  
+
+    const newNotification = {
+      id: Date.now(),
+      message: "🔔 New Notification",
+      timestamp: new Date().toLocaleTimeString(),
+    };
+
+    const storedNotifications = JSON.parse(localStorage.getItem("notifications") || "[]");
+    const updatedNotifications = [newNotification, ...storedNotifications].slice(0, 10);
+
+    localStorage.setItem("notifications", JSON.stringify(updatedNotifications));
+    setNotifications(updatedNotifications);
+
     if (permission === "granted") {
-      new Notification("🔔 New Notification", {
+      new Notification(newNotification.message, {
         body: "This is a browser push notification!",
         icon: "/bell-icon.png",
       });
-  
+
       if (navigator.vibrate) {
-        navigator.vibrate([200, 100, 200]); 
+        navigator.vibrate([200, 100, 200]);
       }
     }
   };
-  
 
   return (
     <div className="relative">
