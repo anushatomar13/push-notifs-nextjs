@@ -30,45 +30,50 @@ export default function PushNotifs({ setNotifications }: { setNotifications: (no
   };
 
   const sendNotification = async () => {
+    if (permission === "denied") {
+      alert("Notifications are blocked in your browser settings.");
+      return;
+    }
+  
     if (permission === "default") {
       requestPermission();
       return;
     }
-
-    await fetchQuote();
-
+  
+    await fetchQuote(); 
+  
     setShowNotif(true);
     setTimeout(() => setShowNotif(false), 3000);
-
+  
     const newNotification = {
       id: Date.now(),
       message: quote,
       timestamp: new Date().toLocaleTimeString(),
     };
-
+  
     const storedNotifications = JSON.parse(localStorage.getItem("notifications") || "[]");
     const updatedNotifications = [newNotification, ...storedNotifications].slice(0, 10);
-
+  
     localStorage.setItem("notifications", JSON.stringify(updatedNotifications));
     setNotifications(updatedNotifications);
-
+  
     if (permission === "granted") {
       new Notification("✨ New Quote!", {
         body: quote,
         icon: "/bell-icon.png",
       });
-
+  
       if (navigator.vibrate) {
         navigator.vibrate([200, 100, 200]);
       }
     }
   };
-
+  
   return (
-    <div className="relative">
+    <div className="relative w-full flex justify-center">
       <button
         onClick={sendNotification}
-        className="w-full rounded-md border border-[#a560ff] px-4 py-2 text-sm font-semibold text-[#a560ff] transition-all duration-300 hover:scale-110 hover:bg-[#a560ff] hover:text-white hover:border-3 hover:border-[#d8b4ff]"
+        className="w-full max-w-xs rounded-md border border-[#a560ff] px-4 py-2 text-sm font-semibold text-[#a560ff] transition-all duration-300 hover:scale-110 hover:bg-[#a560ff] hover:text-white"
       >
         Send Notification
       </button>
@@ -80,7 +85,7 @@ export default function PushNotifs({ setNotifications }: { setNotifications: (no
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
             transition={{ duration: 0.3 }}
-            className="fixed top-5 right-5 z-50 bg-[#1b0f2f] border border-[#a560ff] shadow-lg p-4 rounded-lg text-white flex items-center gap-3"
+            className="fixed top-5 right-5 md:right-10 bg-[#1b0f2f] border border-[#a560ff] shadow-lg p-4 rounded-lg text-white flex items-center gap-3 max-w-xs"
           >
             <Bell className="text-[#a560ff]" />
             <div>
